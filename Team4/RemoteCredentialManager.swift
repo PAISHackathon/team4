@@ -9,6 +9,12 @@ import Foundation
 import UIKit
 import MultipeerConnectivity
 
+extension Notification.Name {
+    static let credentialServersFound = Notification.Name("credentialServersFound")
+    static let credentialServersNotFound = Notification.Name("credentialServersNotFound")
+    static let credentialAcquired = Notification.Name("credentialAcquired")
+}
+
 class RemoteCredentialManager :
     NSObject,
     MCNearbyServiceAdvertiserDelegate,
@@ -20,7 +26,8 @@ class RemoteCredentialManager :
     private var advertiser : MCNearbyServiceAdvertiser!
     private var browser : MCNearbyServiceBrowser!
     private var session : MCSession!
-    
+    private var discoveredPeers = [MCPeerID]()
+
     private var isBroadcasting = false
     private var isListening = false
 
@@ -71,7 +78,21 @@ class RemoteCredentialManager :
     // Should be called by the login form when it's dismissed
     func stopListening() {
         browser.stopBrowsingForPeers()
+
+        discoveredPeers.removeAll()
         isListening = false
+    }
+
+    // MARK: Request management
+
+    func requestCredential() {
+        for peerID in discoveredPeers {
+            browser.invitePeer(peerID, to: session, withContext: nil, timeout: 30.0)
+        }
+    }
+
+    private func postCredentialAcquired(_ credential: UserCredential!) {
+        NotificationCenter.default.post(name: .credentialAcquired, object: credential)
     }
 
     // MARK: MCNearbyServiceAdvertiserDelegate
@@ -98,8 +119,7 @@ class RemoteCredentialManager :
                                           handler: { _ in invitationHandler(true, self.session) }))
 
             // Dirty!
-            if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-               let parent = appDelegate.window?.rootViewController?.presentingViewController {
+            if let parent = AppDelegate.shared.window?.rootViewController?.presentingViewController {
                 parent.show(alert, sender: nil)
             }
         }
@@ -112,14 +132,24 @@ class RemoteCredentialManager :
         print("Found [\(peerID.displayName)] peer")
 
         if isListening {
-            // Invite server to join the session. Note we may invite multiple servers, but it's ok
-            // we'll just take the credentials from the first that grants us access.
-            browser.invitePeer(peerID, to: session, withContext: nil, timeout: 30.0)
+            if !discoveredPeers.contains(peerID) {
+                discoveredPeers.append(peerID)
+            }
+
+            NotificationCenter.default.post(name: .credentialServersFound, object: self)
         }
     }
 
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         print("Lost [\(peerID.displayName)] peer")
+
+        if let index = discoveredPeers.index(of: peerID) {
+            discoveredPeers.remove(at: index)
+        }
+
+        if discoveredPeers.isEmpty {
+            NotificationCenter.default.post(name: .credentialServersNotFound, object: self)
+        }
     }
 
     func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {

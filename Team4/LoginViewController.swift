@@ -12,42 +12,58 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var passwordFiled: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var loginRemoteButton: UIButton!
-    
+
     override func viewDidLoad() {
-        super.viewDidLoad()
+        loginRemoteButton.isHidden = true
 
-        // Do any additional setup after loading the view.
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onCredentialServersFound), name: .credentialServersFound, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onCredentialServersNotFound), name: .credentialServersNotFound, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onCredentialAcquired(_:)), name: .credentialAcquired, object: nil);
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
-    
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    override func viewWillAppear(_ animated: Bool) {
+        AppDelegate.shared.remoteCredentialManager.startListening()
     }
-    */
-    
+
+    override func viewDidDisappear(_ animated: Bool) {
+        AppDelegate.shared.remoteCredentialManager.stopListening()
+    }
+
     @IBAction func loginButtonTapped(_ sender: Any) {
         guard let username = usernameField.text, let password = passwordFiled.text
-            else{
-                return
+        else {
+            return
         }
-        LocalCredentialManager.shared.saveUserCredential(UserCredential(username: username, password: password))
-        dismiss(animated: true, completion: nil)
+
+        login(UserCredential(username: username, password: password))
     }
     
     @IBAction func loginRemoteButtonTapped(_ sender: Any) {
+        AppDelegate.shared.remoteCredentialManager.requestCredential()
     }
     
     @IBAction func cancelTapped(_ sender: Any) {
         dismiss(animated: true, completion: nil)
+    }
+
+    func login(_ credential: UserCredential!) {
+        LocalCredentialManager.shared.saveUserCredential(credential)
+        dismiss(animated: true, completion: nil)
+    }
+
+    @objc func onCredentialServersFound() {
+        loginRemoteButton.isHidden = false
+    }
+
+    @objc func onCredentialServersNotFound() {
+        loginRemoteButton.isHidden = true
+    }
+
+    @objc func onCredentialAcquired(_ notification: Notification!) {
+        login(notification.object as! UserCredential)
     }
 }

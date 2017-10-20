@@ -9,6 +9,11 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    static var shared : AppDelegate! {
+        get {
+            return UIApplication.shared.delegate as! AppDelegate
+        }
+    }
 
     var window: UIWindow?
     var remoteCredentialManager: RemoteCredentialManager!
