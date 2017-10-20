@@ -14,8 +14,8 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(ProfileViewController.handleNotification(_:)), name: LocalCredentialManager.kLoggedIn, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(ProfileViewController.handleNotification(_:)), name: LocalCredentialManager.kLoggedOut, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleNotification(_:)), name: .loggedIn, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleNotification(_:)), name: .loggedOut, object: nil)
     }
     
     deinit {

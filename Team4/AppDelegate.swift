@@ -23,8 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         remoteCredentialManager = RemoteCredentialManager()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onLoggedIn), name: LocalCredentialManager.kLoggedIn, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(self.onLoggedOut), name: LocalCredentialManager.kLoggedOut, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onLoggedIn), name: .loggedIn, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onLoggedOut), name: .loggedOut, object: nil)
         return true
     }
 

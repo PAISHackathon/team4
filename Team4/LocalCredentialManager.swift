@@ -12,17 +12,21 @@ struct UserCredential: Codable {
     var password:String
 }
 
+extension Notification.Name {
+    static let loggedIn = Notification.Name("loggedIn")
+    static let loggedOut = Notification.Name("loggedOut")
+}
+
+
 class LocalCredentialManager {
     static let shared = LocalCredentialManager()
-    static let kLoggedIn = Notification.Name(rawValue:"LocalCredentialManagerLoggedIn")
-    static let kLoggedOut = Notification.Name(rawValue:"LocalCredentialManagerLoggedOut")
     private let kUsername = "username"
     private let kPassword = "password"
     
     func saveUserCredential(_ credential:UserCredential) {
         UserDefaults.standard.set(credential.username, forKey: kUsername)
         UserDefaults.standard.set(credential.password, forKey: kPassword)
-        NotificationCenter.default.post(name: LocalCredentialManager.kLoggedIn, object: nil)
+        NotificationCenter.default.post(name: .loggedIn, object: credential)
     }
     
     func loadUser() -> UserCredential? {
@@ -37,6 +41,6 @@ class LocalCredentialManager {
     func removeCredential() {
         UserDefaults.standard.removeObject(forKey: kUsername)
         UserDefaults.standard.removeObject(forKey: kPassword)
-        NotificationCenter.default.post(name: LocalCredentialManager.kLoggedOut, object: nil)
+        NotificationCenter.default.post(name: .loggedOut, object: nil)
     }
 }
