@@ -23,6 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.onLoggedIn), name: .loggedIn, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.onLoggedOut), name: .loggedOut, object: nil)
+
+        onResume()
         return true
     }
 
@@ -32,6 +34,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
+        onResume()
+    }
+
+    fileprivate func onResume() {
         if let _ = LocalCredentialManager.shared.loadUser() {
             remoteCredentialManager.startBroadcasting()
         }
