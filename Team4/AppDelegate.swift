@@ -17,6 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
 
         remoteCredentialManager = RemoteCredentialManager()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onLoggedIn), name: LocalCredentialManager.kLoggedIn, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onLoggedOut), name: LocalCredentialManager.kLoggedOut, object: nil)
         return true
     }
 
@@ -36,13 +39,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
 
-        if (/* FIXME: check local credentials exist */ true) {
+        if let _ = LocalCredentialManager.shared.loadUser() {
             remoteCredentialManager.startBroadcasting()
         }
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    }
+
+    @objc func onLoggedIn() {
+        remoteCredentialManager.startBroadcasting()
+    }
+
+    @objc func onLoggedOut() {
+        remoteCredentialManager.stopBroadcasting()
     }
 }
 
