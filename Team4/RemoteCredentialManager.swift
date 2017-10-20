@@ -9,41 +9,111 @@ import Foundation
 import UIKit
 import MultipeerConnectivity
 
-class RemoteCredentialManager : NSObject, MCNearbyServiceAdvertiserDelegate, MCSessionDelegate {
+class RemoteCredentialManager :
+    NSObject,
+    MCNearbyServiceAdvertiserDelegate,
+    MCNearbyServiceBrowserDelegate,
+    MCSessionDelegate
+{
     private let serviceType = "com.rakuten.id.japan.passwordCredential"
-    private var peerId : MCPeerID!
+    private var localPeerId : MCPeerID!
     private var advertiser : MCNearbyServiceAdvertiser!
+    private var browser : MCNearbyServiceBrowser!
+    private var session : MCSession!
+    private var isBroadcasting = false
+    private var isListening = false
 
     override init() {
         super.init()
 
-        // Create a peer id using the device name as a display name
-        peerId = MCPeerID(displayName: UIDevice.current.name)
+        localPeerId = MCPeerID(displayName: UIDevice.current.name)
 
-        // Get the app's display name
-        let appBundle = Bundle.main
-        let appName = appBundle.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
+        session = MCSession(peer: localPeerId)
+        session.delegate = self
 
-        advertiser = MCNearbyServiceAdvertiser(peer: peerId, discoveryInfo: ["appName": appName], serviceType: serviceType)
+        advertiser = MCNearbyServiceAdvertiser(peer: localPeerId, discoveryInfo: nil, serviceType: serviceType)
         advertiser.delegate = self
+
+        browser = MCNearbyServiceBrowser(peer: localPeerId, serviceType: serviceType);
+        browser.delegate = self
     }
 
-    func startAdvertising() {
-        advertiser.startAdvertisingPeer()
+    // MARK: Broadcasting
+
+    // Should be called when the app is foreground and has credentials
+    func startBroadcasting() {
+        if (!isBroadcasting) {
+            advertiser.startAdvertisingPeer()
+            isBroadcasting = true
+        }
     }
 
-    func stopAdvertising() {
-        advertiser.stopAdvertisingPeer()
+    // Should be called when the app goes to background
+    func stopBroadcasting() {
+        if (isBroadcasting) {
+            advertiser.stopAdvertisingPeer()
+            isBroadcasting = false
+        }
+    }
+
+    // MARK: Listening
+
+    // Should be called by the login form when it's shown
+    func startListening() {
+        if (!isListening) {
+            browser.startBrowsingForPeers()
+            isListening = true
+        }
+    }
+
+    // Should be called by the login form when it's dismissed
+    func stopListening() {
+        if (isListening) {
+            browser.stopBrowsingForPeers()
+            isListening = false
+        }
     }
 
     // MARK: MCNearbyServiceAdvertiserDelegate
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
-        // no-op for now
+        print("Did not start advertising: \(error.localizedDescription)")
     }
 
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        let session = MCSession(peer: peerId)
-        session.delegate = self
+        let alert = UIAlertController(title: nil,
+                                      message: "[\(peerID.displayName)] would like to access your credentials",
+                                      preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "Deny",
+                                      style: .cancel,
+                                      handler: { _ in invitationHandler(false, nil) }))
+
+        alert.addAction(UIAlertAction(title: "Grant",
+                                      style: .default,
+                                      handler: { _ in invitationHandler(true, self.session) }))
+
+        // Dirty!
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate,
+           let parent = appDelegate.window?.rootViewController?.presentingViewController {
+            parent.show(alert, sender: nil)
+        }
+    }
+
+    // MARK: MCNearbyServiceBrowserDelegate
+    func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
+        // Found a server
+        if (isListening) {
+            stopListening()
+            browser.invitePeer(peerID, to: session, withContext: nil, timeout: 30.0)
+        }
+    }
+
+    func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
+        print("Lost [\(peerID.displayName)] peer")
+    }
+
+    func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
+        print("Did not start browing: \(error.localizedDescription)")
     }
 
     // MARK: MCSessionDelegate
