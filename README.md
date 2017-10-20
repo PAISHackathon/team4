@@ -1,4 +1,4 @@
-# team4
+# Team 4
 Team 4's project for the SSED PAIS Hackathon.
 
 ## Overview
