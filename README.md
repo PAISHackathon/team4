@@ -6,6 +6,8 @@ This is a short POC for the concept documented at [ezpx.github.io](https://ezpx.
 
 The sample app implements cross-device credential exchange, allowing a user to login on device B if they're logged into device A already.
 
+Many people now have a tablet at home, that family members use for shopping & entertainment. Sharing credentials for SSO across devices thus has the potential to ease login for many users.
+
 ## Limitations
 - No security is implemented in the POC, tho the framework supports encryption using X.509 certificates.
 - Error handling is minimal
