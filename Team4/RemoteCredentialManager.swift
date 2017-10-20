@@ -15,7 +15,7 @@ class RemoteCredentialManager :
     MCNearbyServiceBrowserDelegate,
     MCSessionDelegate
 {
-    private let serviceType = "com.rakuten.id.japan.passwordCredential"
+    private let serviceType = "r10-id-jp"
     private var localPeerId : MCPeerID!
     private var advertiser : MCNearbyServiceAdvertiser!
     private var browser : MCNearbyServiceBrowser!
