@@ -57,10 +57,12 @@ class LoginViewController: UIViewController {
 
     @objc func onCredentialServersFound() {
         loginRemoteButton.isEnabled = true
+        loginRemoteButton.backgroundColor = UIColor(red: 0.3412, green: 0.6235, blue: 0.1686, alpha: 1)
     }
 
     @objc func onCredentialServersNotFound() {
         loginRemoteButton.isEnabled = false
+        loginRemoteButton.backgroundColor = UIColor(white: 0.33333, alpha: 1)
     }
 
     @objc func onCredentialAcquired(_ notification: Notification!) {
