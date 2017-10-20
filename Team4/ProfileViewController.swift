@@ -13,16 +13,46 @@ class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ProfileViewController.handleNotification(_:)), name: LocalCredentialManager.kLoggedIn, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ProfileViewController.handleNotification(_:)), name: LocalCredentialManager.kLoggedOut, object: nil)
     }
-
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func handleNotification(_ notification:Notification) {
+        updateDisplay()
+    }
+    
+    fileprivate func updateDisplay() {
+        if let user = LocalCredentialManager.shared.loadUser() {
+            usernameLabel.text = user.username
+            loginButton.setTitle("logout", for: .normal)
+        } else {
+            usernameLabel.text = "-"
+            loginButton.setTitle("login", for: .normal)
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        updateDisplay()
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-    @IBAction func loginButtonTapped(_ sender: Any) {
-    }
     
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        if identifier == "loginSegue" {
+            if LocalCredentialManager.shared.loadUser() != nil {
+                LocalCredentialManager.shared.removeCredential()
+                return false
+            }
+        }
+        return true
+    }
 }
 

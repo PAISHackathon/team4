@@ -36,9 +36,18 @@ class LoginViewController: UIViewController {
     */
     
     @IBAction func loginButtonTapped(_ sender: Any) {
+        guard let username = usernameField.text, let password = passwordFiled.text
+            else{
+                return
+        }
+        LocalCredentialManager.shared.saveUserCredential(UserCredential(username: username, password: password))
+        dismiss(animated: true, completion: nil)
     }
     
     @IBAction func loginRemoteButtonTapped(_ sender: Any) {
     }
     
+    @IBAction func cancelTapped(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
+    }
 }
