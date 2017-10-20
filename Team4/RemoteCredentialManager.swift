@@ -92,7 +92,7 @@ class RemoteCredentialManager :
         }
     }
 
-    private func postCredentialAcquired(_ credential: UserCredential!) {
+    fileprivate func postCredentialAcquired(_ credential: UserCredential!) {
         DispatchQueue.main.async {
             NotificationCenter.default.post(name: .credentialAcquired, object: credential)
         }
@@ -109,21 +109,20 @@ class RemoteCredentialManager :
         print("Received invitation from [\(peerID.displayName)] peer")
 
         if isBroadcasting {
-            let alert = UIAlertController(title: nil,
-                                          message: "[\(peerID.displayName)] would like to access your credentials",
-                                          preferredStyle: .alert)
+            DispatchQueue.main.async {
+                let alert = UIAlertController(title: nil,
+                                              message: "[\(peerID.displayName)] would like to access your credentials",
+                                              preferredStyle: .alert)
 
-            alert.addAction(UIAlertAction(title: "Deny",
-                                          style: .cancel,
-                                          handler: { _ in invitationHandler(false, nil) }))
+                alert.addAction(UIAlertAction(title: "Deny",
+                                              style: .cancel,
+                                              handler: { _ in invitationHandler(false, nil) }))
 
-            alert.addAction(UIAlertAction(title: "Grant",
-                                          style: .default,
-                                          handler: { _ in invitationHandler(true, self.session) }))
+                alert.addAction(UIAlertAction(title: "Grant",
+                                              style: .default,
+                                              handler: { _ in invitationHandler(true, self.session) }))
 
-            // Dirty!
-            if let parent = AppDelegate.shared.window?.rootViewController {
-                parent.show(alert, sender: nil)
+                AppDelegate.shared.show(viewController: alert)
             }
         }
     }

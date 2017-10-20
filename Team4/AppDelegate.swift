@@ -37,6 +37,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         onResume()
     }
 
+    func show(viewController: UIViewController!) {
+        if let parent = window?.rootViewController {
+            parent.show(viewController, sender: nil)
+        }
+    }
+
     fileprivate func onResume() {
         if let _ = LocalCredentialManager.shared.loadUser() {
             remoteCredentialManager.startBroadcasting()

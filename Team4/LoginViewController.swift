@@ -15,6 +15,7 @@ class LoginViewController: UIViewController {
 
     override func viewDidLoad() {
         loginRemoteButton.isEnabled = false
+        loginRemoteButton.backgroundColor = UIColor(white: 0.33333, alpha: 1)
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.onCredentialServersFound), name: .credentialServersFound, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(self.onCredentialServersNotFound), name: .credentialServersNotFound, object: nil);
