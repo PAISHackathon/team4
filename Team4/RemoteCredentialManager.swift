@@ -119,7 +119,7 @@ class RemoteCredentialManager :
                                           handler: { _ in invitationHandler(true, self.session) }))
 
             // Dirty!
-            if let parent = AppDelegate.shared.window?.rootViewController?.presentingViewController {
+            if let parent = AppDelegate.shared.window?.rootViewController {
                 parent.show(alert, sender: nil)
             }
         }
@@ -158,11 +158,25 @@ class RemoteCredentialManager :
 
     // MARK: MCSessionDelegate
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-        // TODO
+        if state == .connected, let user = LocalCredentialManager.shared.loadUser() {
+            do {
+                let data = try JSONEncoder().encode(user)
+                try session.send(data, toPeers: [peerID], with: .reliable)
+            } catch {
+                print("Something wrong", error.localizedDescription)
+            }
+        }
     }
-
+    
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        // TODO
+        do {
+            let userCredential: UserCredential = try JSONDecoder().decode(UserCredential.self, from: data)
+            // get it back
+            session.disconnect()
+            NotificationCenter.default.post(name: .credentialAcquired, object: userCredential, userInfo: nil)
+        } catch {
+            print("Something wrong", error.localizedDescription)
+        }
     }
 
     func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
