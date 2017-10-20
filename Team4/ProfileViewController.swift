@@ -8,7 +8,7 @@
 import UIKit
 
 class ProfileViewController: UIViewController {
-    @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var topTextLabel: UILabel!
     @IBOutlet weak var loginButton: UIButton!
     
     override func viewDidLoad() {
@@ -26,23 +26,18 @@ class ProfileViewController: UIViewController {
         updateDisplay()
     }
     
-    fileprivate func updateDisplay() {
-        if let user = LocalCredentialManager.shared.loadUser() {
-            usernameLabel.text = user.username
-            loginButton.setTitle("logout", for: .normal)
-        } else {
-            usernameLabel.text = "-"
-            loginButton.setTitle("login", for: .normal)
-        }
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         updateDisplay()
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+
+    fileprivate func updateDisplay() {
+        if let user = LocalCredentialManager.shared.loadUser() {
+            topTextLabel.text = "Welcome back, \(user.username)!"
+            loginButton.setTitle("logout", for: .normal)
+        } else {
+            topTextLabel.text = "Tap the button below to login"
+            loginButton.setTitle("login", for: .normal)
+        }
     }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {

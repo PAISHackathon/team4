@@ -84,6 +84,7 @@ class RemoteCredentialManager :
     }
 
     // MARK: Request management
+    // ------------------------
 
     func requestCredential() {
         for peerID in discoveredPeers {

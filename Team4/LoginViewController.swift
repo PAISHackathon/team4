@@ -14,7 +14,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var loginRemoteButton: UIButton!
 
     override func viewDidLoad() {
-        loginRemoteButton.isHidden = true
+        loginRemoteButton.isEnabled = false
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.onCredentialServersFound), name: .credentialServersFound, object: nil);
         NotificationCenter.default.addObserver(self, selector: #selector(self.onCredentialServersNotFound), name: .credentialServersNotFound, object: nil);
@@ -56,11 +56,11 @@ class LoginViewController: UIViewController {
     }
 
     @objc func onCredentialServersFound() {
-        loginRemoteButton.isHidden = false
+        loginRemoteButton.isEnabled = true
     }
 
     @objc func onCredentialServersNotFound() {
-        loginRemoteButton.isHidden = true
+        loginRemoteButton.isEnabled = false
     }
 
     @objc func onCredentialAcquired(_ notification: Notification!) {
