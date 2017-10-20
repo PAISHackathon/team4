@@ -13,9 +13,9 @@ The sample app implements cross-device credential exchange, allowing a user to l
 
 ## Next steps
 - [ ] Public key exchange and proper security.
-- [ ] Android implementation using Wi-Fi P2P.
+- [ ] Android implementation using [Wi-Fi P2P](https://developer.android.com/guide/topics/connectivity/wifip2p.html) or [Wi-Fi Direct](https://developer.android.com/guide/topics/connectivity/wifi-aware.html).
 - [ ] Support for iOS⬌Android data exchange (this should already work over tethered Wi-Fi, actualy).
-- [ ] Proper implementation of every state.
+- [ ] Proper implementation & check of every state, with proper error handling.
 - [ ] Conquer the world.
 
 ## Team 4 members
