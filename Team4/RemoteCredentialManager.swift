@@ -93,7 +93,9 @@ class RemoteCredentialManager :
     }
 
     private func postCredentialAcquired(_ credential: UserCredential!) {
-        NotificationCenter.default.post(name: .credentialAcquired, object: credential)
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .credentialAcquired, object: credential)
+        }
     }
 
     // MARK: MCNearbyServiceAdvertiserDelegate
@@ -137,7 +139,9 @@ class RemoteCredentialManager :
                 discoveredPeers.append(peerID)
             }
 
-            NotificationCenter.default.post(name: .credentialServersFound, object: self)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .credentialServersFound, object: self)
+            }
         }
     }
 
@@ -149,7 +153,9 @@ class RemoteCredentialManager :
         }
 
         if discoveredPeers.isEmpty {
-            NotificationCenter.default.post(name: .credentialServersNotFound, object: self)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .credentialServersNotFound, object: self)
+            }
         }
     }
 

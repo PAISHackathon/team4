@@ -26,7 +26,10 @@ class LocalCredentialManager {
     func saveUserCredential(_ credential:UserCredential) {
         UserDefaults.standard.set(credential.username, forKey: kUsername)
         UserDefaults.standard.set(credential.password, forKey: kPassword)
-        NotificationCenter.default.post(name: .loggedIn, object: credential)
+
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .loggedIn, object: credential)
+        }
     }
     
     func loadUser() -> UserCredential? {
@@ -41,6 +44,9 @@ class LocalCredentialManager {
     func removeCredential() {
         UserDefaults.standard.removeObject(forKey: kUsername)
         UserDefaults.standard.removeObject(forKey: kPassword)
-        NotificationCenter.default.post(name: .loggedOut, object: nil)
+
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .loggedOut, object: nil)
+        }
     }
 }
