@@ -36,7 +36,7 @@ class RemoteCredentialManager :
 
         localPeerId = MCPeerID(displayName: UIDevice.current.name)
 
-        session = MCSession(peer: localPeerId)
+        session = MCSession(peer: localPeerId, securityIdentity: nil, encryptionPreference: .none)
         session.delegate = self
 
         advertiser = MCNearbyServiceAdvertiser(peer: localPeerId, discoveryInfo: nil, serviceType: serviceType)
@@ -174,7 +174,7 @@ class RemoteCredentialManager :
             let userCredential: UserCredential = try JSONDecoder().decode(UserCredential.self, from: data)
             // get it back
             session.disconnect()
-            NotificationCenter.default.post(name: .credentialAcquired, object: userCredential, userInfo: nil)
+            postCredentialAcquired(userCredential)
         } catch {
             print("Something wrong", error.localizedDescription)
         }
