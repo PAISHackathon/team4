@@ -13,6 +13,7 @@
 		69E9684E1F998497001737D0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 69E9684C1F998497001737D0 /* Main.storyboard */; };
 		69E968501F998497001737D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 69E9684F1F998497001737D0 /* Assets.xcassets */; };
 		69E968531F998497001737D0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 69E968511F998497001737D0 /* LaunchScreen.storyboard */; };
+		69E9685B1F998FE9001737D0 /* RemoteCredentialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E9685A1F998FE9001737D0 /* RemoteCredentialManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		69E9684F1F998497001737D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		69E968521F998497001737D0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		69E968541F998497001737D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		69E9685A1F998FE9001737D0 /* RemoteCredentialManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteCredentialManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 				69E9684F1F998497001737D0 /* Assets.xcassets */,
 				69E968511F998497001737D0 /* LaunchScreen.storyboard */,
 				69E968541F998497001737D0 /* Info.plist */,
+				69E9685A1F998FE9001737D0 /* RemoteCredentialManager.swift */,
 			);
 			path = Team4;
 			sourceTree = "<group>";
@@ -140,6 +143,7 @@
 			files = (
 				282437951F998675004951D7 /* LoginViewController.swift in Sources */,
 				69E9684B1F998497001737D0 /* ProfileViewController.swift in Sources */,
+				69E9685B1F998FE9001737D0 /* RemoteCredentialManager.swift in Sources */,
 				69E968491F998497001737D0 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
