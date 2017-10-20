@@ -12,11 +12,11 @@ The sample app implements cross-device credential exchange, allowing a user to l
 - Code is messy and nowhere ready for being used in anything serious (hey it's a hackathon, right…)
 
 ## Next steps
-[ ] Public key exchange and proper security.
-[ ] Android implementation using Wi-Fi P2P.
-[ ] Support for iOS⬌Android data exchange (this should already work over tethered Wi-Fi, actualy).
-[ ] Proper implementation of every state.
-[ ] Conquer the world.
+- [ ] Public key exchange and proper security.
+- [ ] Android implementation using Wi-Fi P2P.
+- [ ] Support for iOS⬌Android data exchange (this should already work over tethered Wi-Fi, actualy).
+- [ ] Proper implementation of every state.
+- [ ] Conquer the world.
 
 ## Team 4 members
 |⭐️|Name|
